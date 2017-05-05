@@ -1,0 +1,82 @@
+= Java9 REPL - Java Developer Finally Productive
+
+== Abstract
+
+Oh Java, my old, lousy and boilerpalted friend. For ages, trying anything new (which luckily wasn't that frequent afterall) required starting a new project, followed by a `Sandbox` class and a `public static void main` method. Alternatively, a simple JUnit test was a nice entrypoint as well - if we were lucky enough to have some dependency management sorted out.
+
+Thankfully, things have changed. With the Java9 a REPL has been introduced, everybody can just run an up-to-date Java shell and try out new sytaxt, new APIs, new libraries. Now we can feel like Scala, CLojure, Ruby, JavaScript, PHP, call whatever language developers - finally there.
+
+In this talk I'll walk through essential REPL examples, see how we can use JShell to try out new language features (like Java9 Streams enhancements), but foremost, we will use it to build a real-life web application. Expect meat-only talk without theory, diagrams, useless "javax.swing.*" application examples.
+
+== Content
+
+.  Start with simple commands
+.. Show new Java9 streams API enhancements
+.  Base module. Show imports
+.  List vars and methods
+.  Edit functionality
+
+
+== What do we get with a REPL workflow
+
+. Learn the new language and libraries
+. Write code with immediate feedback
+. No build or deploy
+. Easy way of creating faithful lies for our test
+. Tools to understand the real world
+. Fewer surprises when starting the application
+. Add new libraries to a running application
+. Run automatically unit test affected by a change
+. Inspect and manage the state
+. Stay in comfort of your favourite IDE
+. Debug staging and production
+
+Connect to jshell remotly, run jshell from the IDE
+
+== Links
+
+General introduction::
+. http://cr.openjdk.java.net/~rfield/tutorial/JShellTutorial.html#jshell-scripts
+
+JMX Client::
+. JMX Client: https://github.com/YaSuenag/jmxclient
+
+Netbeans JShell::
+. http://info.michael-simons.eu/2016/12/19/using-jshell-in-netbeans/
+. https://www.youtube.com/watch?v=cmhiFxQ2UJE&t=7s
+
+
+== Inspirations
+
+Daniel Lebrero - REPL Driven Development::
+* https://www.youtube.com/watch?v=AmP6rW30wjE
+
+Robert Field - JShell: An Interactive Shell for the Java Platform::
+* https://www.youtube.com/watch?v=jziVaht480w
+* http://www.slideshare.net/JavaDayUA/jshell-an-interactive-shell-for-the-java-platform
+* repl/_src/kyivjshelluse-160108211449.pptx
+
+Roy van Rijn - Brace Yourselves, the REPL is Coming::
+* https://www.youtube.com/watch?v=CN3tGi4eZZ4&app=desktop
+
+Interactive Java Support to your tool, Robert Field::
+* https://www.youtube.com/watch?v=FaV39lwskpM
+* repl/_src/kyivjshelluse-160108211449.pptx
+
+Articles::
+* http://royvanrijn.com/blog/2016/01/jshell-api-design-problems/
+
+Java9::
+* http://blog.codefx.org/java/dev/java-9-stream/
+* http://blog.codefx.org/java/dev/oh-no-forgot-streamiterate/
+* http://blog.codefx.org/java/dev/java-9-optional/
+
+Java9 modules::
+* http://blog.codefx.org/java/dev/jigsaw-hands-on-guide/
+* http://blog.codefx.org/java/reflection-vs-encapsulation/
+* http://blog.codefx.org/tools/jdeps-maven-plugin-0-2/
+* http://blog.codefx.org/java/dev/how-java-9-and-project-jigsaw-may-break-your-code/
+
+
+// https://twitter.com/shipilev/status/839119974643953664
+// + DateTimeFormatter
