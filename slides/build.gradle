@@ -1,0 +1,105 @@
+buildscript {
+  dependencies {
+	classpath 'org.ysb33r.gradle:vfs-gradle-plugin:1.0'
+	classpath 'commons-httpclient:commons-httpclient:3.1'
+  }
+}
+
+plugins {
+	id 'org.asciidoctor.convert' version '1.5.3'
+	id 'com.github.jruby-gradle.base' version '1.2.1'
+}
+
+apply plugin: 'com.github.jruby-gradle.base'
+apply plugin: 'org.asciidoctor.convert'
+apply plugin: 'org.ysb33r.vfs'
+
+defaultTasks 'asciidoctor'
+version = '1.0.0-SNAPSHOT'
+
+repositories {
+    jcenter()
+}
+
+ext {
+	revealjsVersion = 'master'
+	asciidoctorBackendVersion = 'master'
+	downloadDir = new File(buildDir,'download')
+	templateDir = new File(downloadDir,'templates')
+	revealjsDir = new File(downloadDir,'reveal.js')
+}
+
+configurations {
+	pdf
+}
+
+dependencies {
+	pdf 'me.champeau.deck2pdf:deck2pdf:0.3.0'
+}
+
+task download {
+  doLast {
+    mkdir downloadDir
+  	vfs {
+      cp "zip:https://github.com/asciidoctor/asciidoctor-reveal.js/archive/${asciidoctorBackendVersion}.zip!asciidoctor-reveal.js-${asciidoctorBackendVersion}",
+                  templateDir, recursive:true, overwrite:true
+      cp "zip:https://github.com/hakimel/reveal.js/archive/${revealjsVersion}.zip!reveal.js-${revealjsVersion}",
+                  revealjsDir, recursive:true, overwrite:true
+  	}    
+  }
+}
+
+download {
+	description "Download extra revealjs resources"
+	outputs.dir templateDir
+	outputs.dir revealjsDir
+}
+
+asciidoctorj {
+    version = '1.5.5'
+}
+
+asciidoctor {
+	dependsOn download
+
+	sourceDir = file('src')
+
+	sources {
+		include 'slides.adoc'
+	}
+
+	resources {
+		from (sourceDir) {
+			include 'css/**'
+			include 'images/**'
+		}
+		from (downloadDir) {
+			include 'reveal.js/**'
+		}
+	}
+
+	requires = ['tilt']
+	backends = ['revealjs']
+
+	options template_dir: new File(templateDir,'templates/slim').absolutePath
+}
+
+task generatePdf(type:JavaExec) {
+  dependsOn asciidoctor
+
+  def slidesFile = 'slides'
+  if (project.hasProperty('file')) {
+    slidesFile = project.getProperty('file')
+  }
+
+  main = 'me.champeau.deck2pdf.Main'
+  workingDir = file("${buildDir}/asciidoc/")
+  args = ["${workingDir}/revealjs/${slidesFile}.html",
+    "${workingDir}/pdf/${project.name}-${slidesFile}.pdf",
+    '--profile=revealjs', '--width=968', '--height=547']
+  classpath = configurations.pdf
+
+  doFirst {
+    file("$workingDir/pdf/").mkdirs()
+  }
+}

@@ -1,0 +1,80 @@
+= Java9 and REPL
+Forget debugging, welcome joy and productivity
+:idprefix: slide_
+:title-slide-background-image: title_bg_barcelona.jpg
+// Background: https://pbs.twimg.com/media/C_XlJzFXkAAwh5V.jpg
+:title-slide-background-size: cover
+:icons: font
+:imagesdir: images
+:figure-caption!:
+:revealjs_center: true
+:revealjs_theme: poang
+:revealjs_transition: none
+:revealjs_progress: false
+:revealjs_history: true
+:revealjs_controls: false
+:revealjs_customtheme: css/poang.css
+:revealjs_width: 1440
+:revealjs_height: 960
+:source-highlighter: coderay
+
+== What JShell
+
+* Tool providing a dynamic interaction with (in) the Java
+* Read-Evaluate-Print Loop (REPL) for the Java™ platform
+* Deeply integrated with JDK tool-set
+* Also, an API for use within other applications
+
+[NOTE.speaker]
+====
+REPL::
+* Type in a snippet of Java code, see the results
+
+Integration::
+*  Stays current and compatible
+====
+
+== Why JShell? Why REPL?
+
+[%step]
+* Learning Java
+* Experimenting with new libraries
+* Rapid prototyping
+* Integration with build systems
+
+[NOTE.speaker]
+====
+* it lowers the initial learning curve of programming.
+** REPL gives rapid evaluation of code to young developers
+* With a REPL you can just fire it up and play without this overhead.
+* Tweak the definition of a class quickly, reset your REPL, and try it again.
+* Whole classpath under your fingers
+====
+
+== Agenda
+
+- What is JShell
+- JShell features
+- Java9 enhancements in the REPL
+- A simple web application in shell (with SparkJava)
+-- with websockets
+- Build tools integration (Maven)
+
+[.middle%notitle]
+== Demo time
+
+image::https://media.giphy.com/media/UDjF1zMreMld6/giphy.gif[background]
+
+
+== Questions? Links? And other goodies
+
+http://speakerdeck.com/kubamarchwicki/microservices-3camp
+
+@kubem . kuba.marchwicki@gmail.com +
+http://jakub.marchwicki.pl/consultancy
+
+{zwsp}
+
+_Java flavoured_ Microservices *trainings*
+
+_Java8_ _Java9_ *trainings*

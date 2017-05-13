@@ -1,4 +1,4 @@
-= Java9 REPL - Java Developer Finally Productive
+= Java9 and REPL. Forget debugging, welcome joy and productivity
 
 == Abstract
 
@@ -10,12 +10,14 @@ In this talk I'll walk through essential REPL examples, see how we can use JShel
 
 == Content
 
-.  Start with simple commands
-.. Show new Java9 streams API enhancements
-.  Base module. Show imports
-.  List vars and methods
-.  Edit functionality
-
+- explain jshell
+- show some basic new Java9 features in the shell
+- show shell's edit function based on exploring regular expressions and walking file trees
+- build a simple web application in shell (with SparkJava)
+- add web application features (web sockets)
+- showcase direct jshell to app communication
+- save the code from the jshell to be able to refactor it within the IDE
+- (optional) cover java9 module as an essential part of jshell environment
 
 == What do we get with a REPL workflow
 
