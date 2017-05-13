@@ -37,7 +37,7 @@ body {
 #todoapp {
 	background: #fff;
 	background: rgba(255, 255, 255, 0.9);
-	margin: 130px 0 40px 0;
+	margin: 70px 0 40px 0;
 	border: 1px solid #ccc;
 	position: relative;
 	border-top-left-radius: 2px;
@@ -68,9 +68,9 @@ body {
 
 #todoapp h1 {
 	position: absolute;
-	top: -120px;
+	top: -80px;
 	width: 100%;
-	font-size: 70px;
+	font-size: 40px;
 	font-weight: bold;
 	text-align: center;
 	color: #b3b3b3;
@@ -309,6 +309,10 @@ label[for='toggle-all'] {
 	height: 20px;
 	z-index: 1;
 	text-align: center;
+}
+
+footer p.me {
+	color: black;
 }
 
 #footer:before {
