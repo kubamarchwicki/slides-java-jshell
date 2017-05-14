@@ -65,6 +65,8 @@ Integration::
 
 image::https://media.giphy.com/media/UDjF1zMreMld6/giphy.gif[background]
 
+[%notitle]
+== Empty slide
 
 == Questions? Links? And other goodies
 
