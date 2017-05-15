@@ -1,0 +1,280 @@
+== Start of demo
+
+[source]
+start with: tmux attach || tmux new
+
+== Environment and jshell
+
+. jenv: `jenv shell 9-ea`
+.. jenv not to mess with JDK version between different environments
+.. like rvm but for Java
+.. recently JDK is also featured package for sdkman.io
+
+. running jshell for the first time
+.. /help (/?)
+.. `4+4`
+.. `$5 + 4`
+.. Variable naming
+.. Using variables
+.. Default imports (`Math.min()`)
+.. Tab completion + Shift + Tab smart autocompletions
+.. Naming variables (with Alt + 1 + v)
+
+. commands
+.. define interface +
++
+[source]
+----
+interface ToString {
+	String convert(Integer i);
+}
+----
+.. inline +
++
+[source]
+----
+jshell> String toString(Integer i) {
+   ...> return i.toString();
+   ...> }
+----
+.. /edit toString
+.. /set editor pico
+.. /edit toString
+.. /list
+.. /vars
+
+== Java 9
+
+. Java9 Enhancements
+.. `Sets.of()` - JAX-RS
+... `<Set<Class<?>> getClasses()` +
++
+[source]
+----
+jshell> interface Application {
+   ...> Set<Class<?>> getClasses();
+   ...> }
+----
+... `Application a = () -> new HashSet<Class<?>>(Arrays.asList(Math.class, Integer.class));`
+... `Application b = () -> Set.of(Math.class, Integer.class);`
+.. `Lists.of()`
+.. Streams Enhancements
+... `Arrays.asList(1, 2, 3, 4, null)`
+... `$1.stream().map(Optional::ofNullable)`
+... No flatMap of Optional +
++
+[source]
+----
+$1.stream()
+  .map(Optional::ofNullable)
+  .flatMap(o -> o.map(Stream::of).orElse(Stream.empty()))
+  .forEach(System.out::println)
+----
+.... `$1.stream().map(Optional::ofNullable)` +
+`.flatMap(Optional::stream).forEach(System.out::println)`
+.... `$8.stream().takeWhile(Objects::nonNull).forEach(System.out::println)`
+.... Infinite streams
++
+[source]
+----
+IntStream.iterate(0, i -> 2 * i)
+    .takeWhile(i -> i < 42)
+    .forEach(System.out::println)
+----
+.... `IntStream.iterate(1, i -> i < 42,  i -> i + 1).forEach(System.out::println)`
+
+. HttpRequest
+.. http://download.java.net/java/jdk9/docs/api/jdk/incubator/http/HttpRequest.html
+.. jshell> `module jdk`
+.. jshell> import java.net.http.*
+.. jshell> import static java.net.http.HttpRequest.*
+.. jshell> import static java.net.http.HttpResponse.*
+.. Parse JSON from external URI (`https://api-rest-profanity.herokuapp.com/profanity/This%20is%20ok`)
+... Show it in console, curl
+.. URL url = new URL("https://api-rest-profanity.herokuapp.com/profanity/shit");
+.. `HttpRequest.newBuilder(url.toURI()).GET().build()`
+.. `HttpClient.newHttpClient().send($6, BodyHandler.asString())`
+.. `HttpRequest.newBuilder(url.toURI()).header("Accept", "application/json").GET().build()`
+
+.. No - there are no specific plans to unify it with JAX-RS
+.. It's based on Flow API (`HttpRequest.BodyProcessor` implements `Flow.Producer` while `HttpResponse.BodyProcessor` implements `Flow.Subscriber`
+
+== Working with external dependencies
+
+. Starting with external deps
+.. `/env --class-path /home/kubam/.m2/repository/com/sparkjava/spark-core/2.5/spark-core-2.5.jar:/home/kubam/.m2/repository/org/slf4j/slf4j-api/1.7.24/slf4j-api-1.7.24.jar:/home/kubam/.m2/repository/org/slf4j/slf4j-simple/1.7.24/slf4j-simple-1.7.24.jar:/home/kubam/.m2/repository/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar:/home/kubam/.m2/repository/org/eclipse/jetty/aggregate/jetty-all/9.3.6.v20151106/jetty-all-9.3.6.v20151106-uber.jar`
+
+. Initialize (`snippers/1_ignite.jsh`)
+.. Service.ignite() <Alt+1+v>
+.. Service http = Service.ignite()
+.. http.port(8888)
+.. http.staticFiles.externalLocation("/home/kubam/workspaces/slides/java9-jshell/ui")
+.. http.init()
+
+. Basic endpoint
+.. public class Todo{}
+.. /edit Todo
+.. `Todo.class` +
++
+[source]
+----
+public class Todo{
+   public final long id;
+   public final String title;
+   public final long order;
+   public final boolean completed;
+
+   public Todo(long id, String title, long order, boolean completed) {
+     this.id = id;
+     this.title = title;
+     this.order = order;
+     this.completed = completed;
+   }
+}
+----
+.. `Todo aTodo = new Todo(0, "Sample todo", 0, false)`
+.. `http.get("/foo", (req, resp) -> aTodo)`
+.. edit and add toString method +
++
+[source]
+----
+public String toString() {
+  return String.format("Todo{id=%d, title=%s, order=%d, completed=%b}", id, title, order,   completed);
+}
+----
+
+== Downloading external dep
+
+. Download GSON
+.. /save spark-java.jsh (optional)
+.. `mvn dependency:get -Dartifact=com.google.code.gson:gson:2.8.0`
+.. add to classpath
+... `jshell --class-path /home/kubam/.m2/repository/com/google/code/gson/gson/2.8.0/gson-2.8.0.jar`
+... `/env --class-path /home/kubam/.m2/repository/com/google/code/gson/gson/2.8.0/gson-2.8.0.jar`
+.. import com.google.gson.*
+.. `Gson gson = new Gson()`
+.. `http.get("/foo3", (req, resp) -> List.of(aTodo), gson::toJson)`
+
+== Application - endpoints
+
+. Storage GetAll
+.. `Queue<Todo> storage = new ConcurrentLinkedQueue<>();`
+.. `http.get("/api/todos", (req, resp) -> new ArrayList<>(storage), gson::toJson)`
+
+. Storage remove
+.. `storage.removeIf(t -> t.id == id)`
+.. Removing elements from storage +
++
+[source]
+----
+http.delete("/api/todos/:id", (req, resp) -> {
+        long id = Long.parseLong(req.params(":id"));
+        boolean removed = storage.removeIf(t -> t.id == id);
+        if (removed) http.halt(204);
+        else http.halt(404);
+        return null;
+})
+----
+
+. Storage save
+.. Complete Todo.class +
++
+[source]
+----
+class Todo{
+  public final long id;
+  public final String title;
+  public final long order;
+  public final boolean completed;
+
+  public Todo(long id, String title, long order, boolean completed) {
+     this.id = id;
+     this.title = title;
+     this.order = order;
+     this.completed = completed;
+  }
+
+  public Todo assignId(long id) {
+    return new Todo(id, this.title, this.order, this.completed);
+  }
+
+  public String toString() {
+    return String.format("Todo{id=%d, title=%s, order=%d, completed=%b}", id, title, order, completed);
+  }
+}
+----
+.. import java.util.concurrent.atomic.*
+.. `AtomicLong atomic = new AtomicLong()`
+.. Post handling +
++
+[source]
+----
+http.post("/api/todos", (req, resp) -> {
+	Todo data = gson.fromJson(req.body(), Todo.class).assignId(atomic.getAndIncrement());
+
+	storage.add(data);
+	resp.redirect("/api/todos/" + data.id, 201);
+	return null;
+})
+----
+
+== Mavenized project
+
+. Maven
+.. run the thing: `JAVA_HOME=/home/kubam/.jenv/versions/9-ea mvn jshell:compile -f maven/spark`
+.. Other tooling support
+... Netbeans
+... IntelliJ
+
+. Maven example
+.. import example.spark.*;
+.. `Queue<Todo> store = new ConcurrentLinkedQueue<>();`
+.. `App app = App.build().withPort(4567).withStorage(new InMemoryStorage(store)).build();`
+.. `app.run()`
+.. `store.add(Todo.create(2, "Another todo", 2,true))`
+.. Show in the web
+.. add new on the web
+.. `Todo.create(1, "Sample todo", 0, false)`
+.. `store.add($6)`
+.. show `store`
+
+. Live reload
+.. import spark.*
+.. import example.spark.*
+.. `Service ws = Service.ignite()`
+.. `ws.port(35729)`
+.. `ws.webSocket("/livereload", LiveReloadWebSocket.class);`
+.. `ws.init()`
+.. `LiveReloadWebSocket.broadcast()`
+
+== Spring 5 example
+
+. Maven Spring5 example
+.. `JAVA_HOME=/home/kubam/.jenv/versions/9-ea mvn jshell:compile -f maven/spring5`
+.. Basic classes +
++
+[source]
+----
+public class Foo {
+  	public final String text;
+
+   	public Foo(String s) {
+   		this.text = s;
+   	}
+}
+
+public class Wrapper {
+	public Wrapper(Foo foo) {
+		System.out.println(foo.text);
+	}
+}
+----
+
+.. import org.springframework.context.support.*
+.. import org.springframework.context.annotation.*
+.. `GenericApplicationContext ctx = new AnnotationConfigApplicationContext()`
+.. `ctx.registerBean(Foo.class, () -> new Foo("bar"))`
+.. `ctx.registerBean(Wrapper.class, bd -> bd.setScope("prototype"))` //bean descriptor
+.. `ctx.refresh()`
+.. `ctx.getBean(Foo.class)`
+.. `ctx.getBean(Wrapper.class)`
