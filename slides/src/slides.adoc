@@ -63,20 +63,14 @@ Integration::
 [.middle%notitle]
 == Demo time
 
-image::https://media.giphy.com/media/UDjF1zMreMld6/giphy.gif[background]
+image::showtime.gif[background]
 
 [%notitle]
 == Empty slide
 
 == Questions? Links? And other goodies
 
-http://speakerdeck.com/kubamarchwicki/microservices-3camp
+https://github.com/kubamarchwicki/slides-java9-jshell
 
 @kubem . kuba.marchwicki@gmail.com +
-http://jakub.marchwicki.pl/consultancy
-
-{zwsp}
-
-_Java flavoured_ Microservices *trainings*
-
-_Java8_ _Java9_ *trainings*
+http://jakub.marchwicki.pl/

@@ -60,7 +60,13 @@ jshell> interface Application {
 .. `Lists.of()`
 .. Streams Enhancements
 ... `Arrays.asList(1, 2, 3, 4, null)`
-... `$1.stream().map(Optional::ofNullable)`
+... Map +
++
+[source]
+----
+$1.stream()
+	.map(Optional::ofNullable)
+----
 ... No flatMap of Optional +
 +
 [source]
@@ -70,10 +76,24 @@ $1.stream()
   .flatMap(o -> o.map(Stream::of).orElse(Stream.empty()))
   .forEach(System.out::println)
 ----
-.... `$1.stream().map(Optional::ofNullable)` +
-`.flatMap(Optional::stream).forEach(System.out::println)`
-.... `$8.stream().takeWhile(Objects::nonNull).forEach(System.out::println)`
-.... Infinite streams
+... `Optional::stream` +
++
+[source]
+----
+$1.stream()
+	.map(Optional::ofNullable)
+	.flatMap(Optional::stream)
+	.forEach(System.out::println)
+----
+... `takeWhile` +
++
+[source]
+----
+$8.stream()
+	.takeWhile(Objects::nonNull)
+	.forEach(System.out::println)
+----
+... Infinite streams
 +
 [source]
 ----
@@ -81,7 +101,14 @@ IntStream.iterate(0, i -> 2 * i)
     .takeWhile(i -> i < 42)
     .forEach(System.out::println)
 ----
-.... `IntStream.iterate(1, i -> i < 42,  i -> i + 1).forEach(System.out::println)`
+... Without `takeWhile` +
++
+[source]
+----
+IntStream
+	.iterate(1, i -> i < 42,  i -> i + 1)
+	.forEach(System.out::println)
+----
 
 . HttpRequest
 .. http://download.java.net/java/jdk9/docs/api/jdk/incubator/http/HttpRequest.html
@@ -92,9 +119,33 @@ IntStream.iterate(0, i -> 2 * i)
 .. Parse JSON from external URI (`https://api-rest-profanity.herokuapp.com/profanity/This%20is%20ok`)
 ... Show it in console, curl
 .. URL url = new URL("https://api-rest-profanity.herokuapp.com/profanity/shit");
-.. `HttpRequest.newBuilder(url.toURI()).GET().build()`
-.. `HttpClient.newHttpClient().send($6, BodyHandler.asString())`
-.. `HttpRequest.newBuilder(url.toURI()).header("Accept", "application/json").GET().build()`
+.. `HttpRequest.Builder` +
++
+[source]
+----
+HttpRequest
+	.newBuilder(url.toURI())
+	.GET()
+	.build()
+----
+.. `HttpClient.Buidler` +
++
+[source]
+----
+HttpClient
+	.newHttpClient()
+	.send($6, BodyHandler.asString())
+----
+.. header in requests +
++
+[source]
+----
+HttpRequest
+	.newBuilder(url.toURI())
+	.header("Accept", "application/json")
+	.GET()
+	.build()
+----
 
 .. No - there are no specific plans to unify it with JAX-RS
 .. It's based on Flow API (`HttpRequest.BodyProcessor` implements `Flow.Producer` while `HttpResponse.BodyProcessor` implements `Flow.Subscriber`
@@ -147,7 +198,9 @@ public String toString() {
 
 . Download GSON
 .. /save spark-java.jsh (optional)
-.. `mvn dependency:get -Dartifact=com.google.code.gson:gson:2.8.0`
+.. `mvn dependency:get` +
+`-Dartifact=` +
+`com.google.code.gson:gson:2.8.0`
 .. add to classpath
 ... `jshell --class-path /home/kubam/.m2/repository/com/google/code/gson/gson/2.8.0/gson-2.8.0.jar`
 ... `/env --class-path /home/kubam/.m2/repository/com/google/code/gson/gson/2.8.0/gson-2.8.0.jar`
@@ -229,7 +282,13 @@ http.post("/api/todos", (req, resp) -> {
 . Maven example
 .. import example.spark.*;
 .. `Queue<Todo> store = new ConcurrentLinkedQueue<>();`
-.. `App app = App.build().withPort(4567).withStorage(new InMemoryStorage(store)).build();`
+.. With memory storage +
++
+[source]
+----
+App app = App.build().withPort(4567).withStorage(new InMemoryStorage(store)).build();
+----
+
 .. `app.run()`
 .. `store.add(Todo.create(2, "Another todo", 2,true))`
 .. Show in the web
