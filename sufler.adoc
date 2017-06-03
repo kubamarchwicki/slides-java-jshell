@@ -25,20 +25,20 @@ start with: tmux attach || tmux new
 +
 [source]
 ----
-interface ToString {
-	String convert(Integer i);
+interface ConvertToString {
+	String apply(Integer i);
 }
 ----
 .. inline +
 +
 [source]
 ----
-jshell> String toString(Integer i) {
+jshell> String convertToString(Integer i) {
    ...> return i.toString();
    ...> }
 ----
 .. /edit toString
-.. /set editor pico
+.. /set editor vim
 .. /edit toString
 .. /list
 .. /vars
@@ -46,7 +46,7 @@ jshell> String toString(Integer i) {
 == Java 9
 
 . Java9 Enhancements
-.. `Sets.of()` - JAX-RS
+.. `Set.of()` - JAX-RS
 ... `<Set<Class<?>> getClasses()` +
 +
 [source]
@@ -57,7 +57,7 @@ jshell> interface Application {
 ----
 ... `Application a = () -> new HashSet<Class<?>>(Arrays.asList(Math.class, Integer.class));`
 ... `Application b = () -> Set.of(Math.class, Integer.class);`
-.. `Lists.of()`
+.. `List.of()`
 .. Streams Enhancements
 ... `Arrays.asList(1, 2, 3, 4, null)`
 ... Map +
@@ -112,7 +112,7 @@ IntStream
 
 . HttpRequest
 .. http://download.java.net/java/jdk9/docs/api/jdk/incubator/http/HttpRequest.html
-.. jshell> `module jdk`
+.. jshell> /env --add-modules jdk.incubator.httpclient
 .. jshell> import java.net.http.*
 .. jshell> import static java.net.http.HttpRequest.*
 .. jshell> import static java.net.http.HttpResponse.*
@@ -149,6 +149,7 @@ HttpRequest
 
 .. No - there are no specific plans to unify it with JAX-RS
 .. It's based on Flow API (`HttpRequest.BodyProcessor` implements `Flow.Producer` while `HttpResponse.BodyProcessor` implements `Flow.Subscriber`
+.. Gson path: /home/kubam/.m2/repository/com/google/code/gson/gson/2.8.0/gson-2.8.0.jar
 
 == Working with external dependencies
 
