@@ -18,7 +18,6 @@ start with: tmux attach || tmux new
 .. Using variables
 .. Default imports (`Math.min()`)
 .. Tab completion + Shift + Tab smart autocompletions
-.. Naming variables (with Alt + 1 + v)
 
 . commands
 .. define interface +
@@ -42,6 +41,9 @@ jshell> String convertToString(Integer i) {
 .. /edit toString
 .. /list
 .. /vars
+.. export EDITOR=/usr/bin/vim
+.. /save `tofile`
+.. *jshell --startup snipets/0_hello_world.jsh*
 
 == Java 9
 
@@ -59,7 +61,7 @@ jshell> interface Application {
 ... `Application b = () -> Set.of(Math.class, Integer.class);`
 .. `List.of()`
 .. Streams Enhancements
-... `Arrays.asList(1, 2, 3, 4, null)`
+... `List<Integer> list = Arrays.asList(1, 2, 3, 4, null)`
 ... Map +
 +
 [source]
@@ -111,14 +113,18 @@ IntStream
 ----
 
 . HttpRequest
+.. `/reset`
 .. http://download.java.net/java/jdk9/docs/api/jdk/incubator/http/HttpRequest.html
 .. jshell> /env --add-modules jdk.incubator.httpclient
-.. jshell> import java.net.http.*
-.. jshell> import static java.net.http.HttpRequest.*
-.. jshell> import static java.net.http.HttpResponse.*
-.. Parse JSON from external URI (`https://api-rest-profanity.herokuapp.com/profanity/This%20is%20ok`)
+.. jshell> import jdk.incubator.http.*
+.. jshell> import static jdk.incubator.http.HttpRequest.*
+.. jshell> import static jdk.incubator.http.HttpResponse.*
+// .. jshell> import java.net.http.*
+// .. jshell> import static java.net.http.HttpRequest.*
+// .. jshell> import static java.net.http.HttpResponse.*
+.. Parse JSON from external URI (`https://micro-patterns-profanity.herokuapp.com/checkprofanity?text=This%20is%20shit`)
 ... Show it in console, curl
-.. URL url = new URL("https://api-rest-profanity.herokuapp.com/profanity/shit");
+.. URL url = new URL("https://micro-patterns-profanity.herokuapp.com/checkprofanity?text=This%20is%20shit");
 .. `HttpRequest.Builder` +
 +
 [source]
@@ -154,10 +160,12 @@ HttpRequest
 == Working with external dependencies
 
 . Starting with external deps
-.. `/env --class-path /home/kubam/.m2/repository/com/sparkjava/spark-core/2.5/spark-core-2.5.jar:/home/kubam/.m2/repository/org/slf4j/slf4j-api/1.7.24/slf4j-api-1.7.24.jar:/home/kubam/.m2/repository/org/slf4j/slf4j-simple/1.7.24/slf4j-simple-1.7.24.jar:/home/kubam/.m2/repository/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar:/home/kubam/.m2/repository/org/eclipse/jetty/aggregate/jetty-all/9.3.6.v20151106/jetty-all-9.3.6.v20151106-uber.jar`
+.. `/reset`
+.. `/env --class-path /home/kubam/.m2/repository/com/sparkjava/spark-core/2.5/spark-core-2.5.jar:/home/kubam/.m2/repository/org/slf4j/slf4j-api/1.7.24/slf4j-api-1.7.24.jar:/home/kubam/.m2/repository/org/slf4j/slf4j-simple/1.7.24/slf4j-simple-1.7.24.jar:/home/kubam/.m2/repository/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar:/home/kubam/.m2/repository/org/eclipse/jetty/aggregate/jetty-all/9.3.6.v20151106/jetty-all-9.3.6.v20151106-uber.jar:/home/kubam/.m2/repository/com/google/code/gson/gson/2.8.0/gson-2.8.0.jar`
+.. `System.getProperty("java.class.path")`
 
 . Initialize (`snippers/1_ignite.jsh`)
-.. Service.ignite() <Alt+1+v>
+.. import spark.*
 .. Service http = Service.ignite()
 .. http.port(8888)
 .. http.staticFiles.externalLocation("/home/kubam/workspaces/slides/java9-jshell/ui")
@@ -182,29 +190,19 @@ public class Todo{
      this.order = order;
      this.completed = completed;
    }
+
+  public String toString() {
+    return String.format("Todo{id=%d, title=%s, order=%d, completed=%b}", id, title, order,   completed);
+  }
 }
 ----
 .. `Todo aTodo = new Todo(0, "Sample todo", 0, false)`
 .. `http.get("/foo", (req, resp) -> aTodo)`
 .. edit and add toString method +
-+
-[source]
-----
-public String toString() {
-  return String.format("Todo{id=%d, title=%s, order=%d, completed=%b}", id, title, order,   completed);
-}
-----
 
-== Downloading external dep
+== GSON
 
-. Download GSON
 .. /save spark-java.jsh (optional)
-.. `mvn dependency:get` +
-`-Dartifact=` +
-`com.google.code.gson:gson:2.8.0`
-.. add to classpath
-... `jshell --class-path /home/kubam/.m2/repository/com/google/code/gson/gson/2.8.0/gson-2.8.0.jar`
-... `/env --class-path /home/kubam/.m2/repository/com/google/code/gson/gson/2.8.0/gson-2.8.0.jar`
 .. import com.google.gson.*
 .. `Gson gson = new Gson()`
 .. `http.get("/foo3", (req, resp) -> List.of(aTodo), gson::toJson)`

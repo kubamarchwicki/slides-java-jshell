@@ -29,7 +29,9 @@ public class App {
 
     public static void main(String... args) {
 
-        Storage storage = new InMemoryStorage(new ConcurrentLinkedQueue<>());
+        Storage storage = new InMemoryStorage(
+            new ConcurrentLinkedQueue<>()
+        );
         App app = new App(storage);
         app.run();
     }
