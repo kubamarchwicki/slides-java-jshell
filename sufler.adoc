@@ -303,3 +303,15 @@ public class Wrapper {
 .. `ctx.refresh()`
 .. `ctx.getBean(Foo.class)`
 .. `ctx.getBean(Wrapper.class)`
+
+== Bonus - attributes
+
+. You would normally run `java foo.Bar some arguments`
+.. But if you try it with jshell - doesn't work
+. So maybe system property
+.. `java -Dname=value`
+.. `jshell -Dfoo=bar`
+. jshell style is environment variables
+.. `export EDITOR=/usr/bin/vim`
+.. jshell uses _vim_ as default
+.. we can do it with other variables
