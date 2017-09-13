@@ -43,7 +43,6 @@ jshell> String convertToString(Integer i) {
 .. /vars
 .. export EDITOR=/usr/bin/vim
 .. /save `tofile`
-.. *jshell --startup snipets/0_hello_world.jsh*
 
 == Java 9
 
@@ -168,124 +167,90 @@ HttpRequest
 .. import spark.*
 .. Service http = Service.ignite()
 .. http.port(8888)
-.. http.staticFiles.externalLocation("/home/kubam/workspaces/slides/java9-jshell/ui")
 .. http.init()
 
+
 . Basic endpoint
-.. public class Todo{}
-.. /edit Todo
-.. `Todo.class` +
+.. `Route r = (req, resp) -> ""`
+.. /edit r
+.. `route` +
 +
 [source]
 ----
-public class Todo{
-   public final long id;
-   public final String title;
-   public final long order;
-   public final boolean completed;
-
-   public Todo(long id, String title, long order, boolean completed) {
-     this.id = id;
-     this.title = title;
-     this.order = order;
-     this.completed = completed;
-   }
-
-  public String toString() {
-    return String.format("Todo{id=%d, title=%s, order=%d, completed=%b}", id, title, order,   completed);
-  }
+Route r = (req, resp) -> {
+	resp.header("Content-type", "application/json");
+	return "{'foo': 'bar'}";
 }
 ----
-.. `Todo aTodo = new Todo(0, "Sample todo", 0, false)`
-.. `http.get("/foo", (req, resp) -> aTodo)`
-.. edit and add toString method +
+.. `http.get("/json", r)`
+.. show in the browser http://localhost:8888/json
+.. edit `:s/'/\\"/g` +
++
+[source]
+----
+Route r = (req, resp) -> {
+	resp.header("Content-type", "application/json");
+	return "{\"foo\": \"bar\"}";
+}
+----
+.. `/save /tmp/json.jsh`
+.. exit and load
+... doesn't work - so start with `--class-path`
+... `/home/kubam/.m2/repository/com/sparkjava/spark-core/2.5/spark-core-2.5.jar:/home/kubam/.m2/repository/org/slf4j/slf4j-api/1.7.24/slf4j-api-1.7.24.jar:/home/kubam/.m2/repository/org/slf4j/slf4j-simple/1.7.24/slf4j-simple-1.7.24.jar:/home/kubam/.m2/repository/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar:/home/kubam/.m2/repository/org/eclipse/jetty/aggregate/jetty-all/9.3.6.v20151106/jetty-all-9.3.6.v20151106-uber.jar:/home/kubam/.m2/repository/com/google/code/gson/gson/2.8.0/gson-2.8.0.jar`
+... doesn't work - so add `/env` command
+... `/env --class-path /home/kubam/.m2/repository/com/sparkjava/spark-core/2.5/spark-core-2.5.jar:/home/kubam/.m2/repository/org/slf4j/slf4j-api/1.7.24/slf4j-api-1.7.24.jar:/home/kubam/.m2/repository/org/slf4j/slf4j-simple/1.7.24/slf4j-simple-1.7.24.jar:/home/kubam/.m2/repository/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar:/home/kubam/.m2/repository/org/eclipse/jetty/aggregate/jetty-all/9.3.6.v20151106/jetty-all-9.3.6.v20151106-uber.jar:/home/kubam/.m2/repository/com/google/code/gson/gson/2.8.0/gson-2.8.0.jar`
 
 == GSON
 
-.. /save spark-java.jsh (optional)
 .. import com.google.gson.*
 .. `Gson gson = new Gson()`
-.. `http.get("/foo3", (req, resp) -> List.of(aTodo), gson::toJson)`
+... add `gson::toJson`
+.. `http.get("/foo", (req, resp) -> List.of(1,2,3,4,5), gson::toJson)`
+
+== Application
+
+. Show `snippets/JavaApp.class`
+.. `export CP=/home/kubam/.m2/repository/com/sparkjava/spark-core/2.5/spark-core-2.5.jar:/home/kubam/.m2/repository/org/slf4j/slf4j-api/1.7.24/slf4j-api-1.7.24.jar:/home/kubam/.m2/repository/org/slf4j/slf4j-simple/1.7.24/slf4j-simple-1.7.24.jar:/home/kubam/.m2/repository/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar:/home/kubam/.m2/repository/org/eclipse/jetty/aggregate/jetty-all/9.3.6.v20151106/jetty-all-9.3.6.v20151106-uber.jar:/home/kubam/.m2/repository/com/google/code/gson/gson/2.8.0/gson-2.8.0.jar`
+.. `javac -cp $CP snippets/JavaApp.java`
+.. when compiles run it `java -cp .:$CP JavaApp`
 
 == Application - endpoints
 
-. Storage GetAll
-.. `Queue<Todo> storage = new ConcurrentLinkedQueue<>();`
-.. `http.get("/api/todos", (req, resp) -> new ArrayList<>(storage), gson::toJson)`
+. If we can prepare snippets and run them, maybe we can prepare complete application
+. Copy `JavaApp.java` to `app.jsh`
+.. run it with `jshell --class-path $CP app.jsh`
+.. backup: `/open snippets/2_application.jsh`
+. show in browser
+. add a simple Todo
+. show in jshell
+. `storage.clear()`
+. show in browser
 
-. Storage remove
-.. `storage.removeIf(t -> t.id == id)`
-.. Removing elements from storage +
-+
-[source]
-----
-http.delete("/api/todos/:id", (req, resp) -> {
-        long id = Long.parseLong(req.params(":id"));
-        boolean removed = storage.removeIf(t -> t.id == id);
-        if (removed) http.halt(204);
-        else http.halt(404);
-        return null;
-})
-----
+== Run from shell
 
-. Storage save
-.. Complete Todo.class +
-+
-[source]
-----
-class Todo{
-  public final long id;
-  public final String title;
-  public final long order;
-  public final boolean completed;
-
-  public Todo(long id, String title, long order, boolean completed) {
-     this.id = id;
-     this.title = title;
-     this.order = order;
-     this.completed = completed;
-  }
-
-  public Todo assignId(long id) {
-    return new Todo(id, this.title, this.order, this.completed);
-  }
-
-  public String toString() {
-    return String.format("Todo{id=%d, title=%s, order=%d, completed=%b}", id, title, order, completed);
-  }
-}
-----
-.. import java.util.concurrent.atomic.*
-.. `AtomicLong atomic = new AtomicLong()`
-.. Post handling +
-+
-[source]
-----
-http.post("/api/todos", (req, resp) -> {
-	Todo data = gson.fromJson(req.body(), Todo.class).assignId(atomic.getAndIncrement());
-
-	storage.add(data);
-	resp.redirect("/api/todos/" + data.id, 201);
-	return null;
-})
-----
+. Run from bash `jshell snippets/2_application.jsh`
+. Copy `snippets/2_application.jsh` to `bash_app.jsh`
+. Add `#!/opt/java/jdk-9/bin/jshell`
+. `chmod a+x bash_app.jsh`
+. Run it as a bash
 
 == Mavenized project
 
 . Maven
-.. run the thing: `JAVA_HOME=/home/kubam/.jenv/versions/9-ea mvn jshell:compile -f maven/spark`
+.. from jshell `jshell -c target/classes/:$CP`
+.. with Maven `JAVA_HOME=/home/kubam/.jenv/versions/9-ea mvn jshell:compile -f maven/spark`
 .. Other tooling support
 ... Netbeans
 ... IntelliJ
 
-. Maven example
+. Spark App exaple
 .. import example.spark.*;
-.. `Queue<Todo> store = new ConcurrentLinkedQueue<>();`
+.. `Queue<Todo> store = new ConcurrentLinkedQueue<>()`
 .. With memory storage +
 +
 [source]
 ----
-App app = App.build().withPort(4567).withStorage(new InMemoryStorage(store)).build();
+App app = App.build().withPort(4567).withStorage(new InMemoryStorage(store)).build()
 ----
 
 .. `app.run()`
@@ -297,12 +262,14 @@ App app = App.build().withPort(4567).withStorage(new InMemoryStorage(store)).bui
 .. show `store`
 
 . Live reload
-.. import spark.*
-.. import example.spark.*
+.. `import spark.*`
+.. `import example.spark.*`
 .. `Service ws = Service.ignite()`
 .. `ws.port(35729)`
 .. `ws.webSocket("/livereload", LiveReloadWebSocket.class);`
 .. `ws.init()`
+. Refresh the browser
+.. `store.add(Todo.create(10, "Livereload Todo", 0, true))`
 .. `LiveReloadWebSocket.broadcast()`
 
 == Spring 5 example
@@ -323,13 +290,13 @@ public class Foo {
 
 public class Wrapper {
 	public Wrapper(Foo foo) {
-		System.out.println(foo.text);
+		System.out.println("Foo text from wrapper: " + foo.text);
 	}
 }
 ----
 
-.. import org.springframework.context.support.*
-.. import org.springframework.context.annotation.*
+.. `import org.springframework.context.support.*`
+.. `import org.springframework.context.annotation.*`
 .. `GenericApplicationContext ctx = new AnnotationConfigApplicationContext()`
 .. `ctx.registerBean(Foo.class, () -> new Foo("bar"))`
 .. `ctx.registerBean(Wrapper.class, bd -> bd.setScope("prototype"))` //bean descriptor
