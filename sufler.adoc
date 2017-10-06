@@ -222,7 +222,7 @@ Route r = (req, resp) -> {
 
 . Run from bash `jshell snippets/2_application.jsh`
 . Copy `snippets/2_application.jsh` to `bash_app.jsh`
-. Add `#!/opt/java/jdk-9/bin/jshell`
+. Add `&hash;!/opt/java/jdk-9/bin/jshell`
 . `chmod a+x bash_app.jsh`
 . Run it as a bash
 

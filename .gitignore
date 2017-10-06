@@ -2,3 +2,4 @@ docs/
 maven/jshell-maven-plugin/
 sufler.html
 .gradle
+*.class
