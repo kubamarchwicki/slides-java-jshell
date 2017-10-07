@@ -82,3 +82,8 @@ Java9 modules::
 
 // https://twitter.com/shipilev/status/839119974643953664
 // + DateTimeFormatter
+
+
+////
+Spring + Hibernate with https://dev.mysql.com/doc/sakila/en/
+////

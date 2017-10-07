@@ -44,6 +44,12 @@ jshell> String convertToString(Integer i) {
 .. export EDITOR=/usr/bin/vim
 .. /save `tofile`
 
+== A canceled doctor's appointment
+
+. Can we use JShell for something useful. A friend got doctors appointment rescheduled by 44 days. JShell can handle it
+.. `import java.time.*`
+.. `LocalDate.now().plusDays(44)`
+
 == Java 9
 
 === Factory methods
@@ -113,6 +119,14 @@ IntStream
 	.iterate(1, i -> i < 42,  i -> i + 1)
 	.forEach(System.out::println)
 ----
+
+=== Http Client - prequel
+
+. There will be a JDK HttpClient, but before we get there - how can we get data from URL
+.. `InputStream is = new URL("http://ip.jsontest.com/").openStream()`
+.. `InputStream.transferTo()`
+... `ByteArrayOutputStream baos = new ByteArrayOutputStream()`
+... `is.transferTo(baos)`
 
 === Http Client
 
@@ -307,3 +321,4 @@ public class Wrapper {
 .. `export EDITOR=/usr/bin/vim`
 .. jshell uses _vim_ as default
 .. we can do it with other variables
+... Even it sounds stupid, it seems coherent. That's the way you setup the editor so why not so the same with arguments
