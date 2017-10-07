@@ -281,7 +281,9 @@ App app = App.build().withPort(4567).withStorage(new InMemoryStorage(store)).bui
 == Spring 5 example
 
 . Maven Spring5 example
-.. `JAVA_HOME=/home/kubam/.jenv/versions/9-ea mvn jshell:compile -f maven/spring5`
+.. `JAVA_HOME=/home/kubam/.jenv/versions/9 mvn jshell:compile -f maven/spring5`
+... To avoid too much typing run with a script `JAVA_HOME=/home/kubam/.jenv/versions/9 mvn package jshell:compile -PwithArgs -DjshellArgs=src/test/scripts/init.jsh`
+... Show what's already there with `/list` command
 .. Basic classes +
 +
 [source]
