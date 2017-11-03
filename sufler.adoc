@@ -1,7 +1,14 @@
 == Start of demo
+:experimental:
 
+. Use multiplexer for multiple teminals
 [source]
 start with: tmux attach || tmux new
+
+// https://www.tecmint.com/screen-command-examples-to-manage-linux-terminals/
+. Use screen to switch consoles
+.. kbd:[Ctrl+A] kbd:[c] - create new screen
+.. kbd:[Ctrl+A] kbd:[n] - next session (screen) - toggle sessions
 
 == Environment and jshell
 
@@ -47,7 +54,7 @@ jshell> String convertToString(Integer i) {
 == A canceled doctor's appointment
 
 . Can we use JShell for something useful. A friend got doctors appointment rescheduled by 44 days. JShell can handle it
-.. `import java.time.*`
+.. `import java.time.&#42;`
 .. `LocalDate.now().plusDays(44)`
 
 == Java 9
@@ -133,9 +140,9 @@ IntStream
 . `/reset`
 . http://download.java.net/java/jdk9/docs/api/jdk/incubator/http/HttpRequest.html
 . jshell> /env --add-modules jdk.incubator.httpclient
-. jshell> import jdk.incubator.http.*
-. jshell> import jdk.incubator.http.HttpRequest.*
-. jshell> import jdk.incubator.http.HttpResponse.*
+. jshell> `import jdk.incubator.http.&#42;`
+. jshell> `import jdk.incubator.http.HttpRequest.&#42;`
+. jshell> `import jdk.incubator.http.HttpResponse.&#42;`
 .. The API will be included in JDK 9 as an incubating feature
 .. Maybe JDK10 (I mean Java 18.3)
 . Parse JSON from external URI (`http://ip.jsontest.com`)
@@ -183,10 +190,10 @@ HttpRequest req = HttpRequest
 .. `System.getProperty("java.class.path")`
 
 . Initialize (`snippers/1_ignite.jsh`)
-.. import spark.*
-.. Service http = Service.ignite()
-.. http.port(8888)
-.. http.init()
+.. `import spark.&#42;`
+.. `Service http = Service.ignite()`
+.. `http.port(8888)`
+.. `http.init()`
 
 . Basic endpoint
 .. `Route r = (req, resp) -> ""`
@@ -200,12 +207,13 @@ Route r = (req, resp) -> {
 	return Map.of("foo", "bar");
 }
 ----
+
 == GSON
 
-.. import com.google.gson.*
+.. `import com.google.gson.&#42;`
 .. `Gson gson = new Gson()`
 .. `http.get("/json", r, gson::toJson)`
-.. show in the browser http://localhost:8888/json
+.. show in the browser `http://localhost:8888/json`
 .. `/save /tmp/json.jsh`
 .. exit and load
 ... doesn't work - so start with `--class-path`
@@ -236,7 +244,7 @@ Route r = (req, resp) -> {
 
 . Run from bash `jshell snippets/2_application.jsh`
 . Copy `snippets/2_application.jsh` to `bash_app.jsh`
-. Add `&hash;!/opt/java/jdk-9/bin/jshell`
+. Add `hash bang /opt/java/jdk-9/bin/jshell`
 . `chmod a+x bash_app.jsh`
 . Run it as a bash
 
@@ -250,7 +258,7 @@ Route r = (req, resp) -> {
 ... IntelliJ
 
 . Spark App exaple
-.. import example.spark.*;
+.. `import example.spark.&#42;`
 .. `Queue<Todo> store = new ConcurrentLinkedQueue<>()`
 .. With memory storage +
 +
@@ -268,8 +276,8 @@ App app = App.build().withPort(4567).withStorage(new InMemoryStorage(store)).bui
 .. show `store`
 
 . Live reload
-.. `import spark.*`
-.. `import example.spark.*`
+.. `import spark.&#42;`
+.. `import example.spark.&#42;`
 .. `Service ws = Service.ignite()`
 .. `ws.port(35729)`
 .. `ws.webSocket("/livereload", LiveReloadWebSocket.class);`
@@ -303,11 +311,11 @@ public class Wrapper {
 }
 ----
 
-.. `import org.springframework.context.support.*`
-.. `import org.springframework.context.annotation.*`
+.. `import org.springframework.context.support.&#42;`
+.. `import org.springframework.context.annotation.&#42;`
 .. `GenericApplicationContext ctx = new AnnotationConfigApplicationContext()`
 .. `ctx.registerBean(Foo.class, () -> new Foo("bar"))`
-.. `ctx.registerBean(Wrapper.class, bd -> bd.setScope("prototype"))` //bean descriptor
+.. `ctx.registerBean(Wrapper.class, bd -> bd.setScope("prototype"))` (a bean descriptor)
 .. `ctx.refresh()`
 .. `ctx.getBean(Foo.class)`
 .. `ctx.getBean(Wrapper.class)`
@@ -316,11 +324,12 @@ public class Wrapper {
 
 . You would normally run `java foo.Bar some arguments`
 .. But if you try it with jshell - doesn't work
-. So maybe system property
-.. `java -Dname=value`
-.. `jshell -Dfoo=bar`
 . jshell style is environment variables
 .. `export EDITOR=/usr/bin/vim`
 .. jshell uses _vim_ as default
 .. we can do it with other variables
 ... Even it sounds stupid, it seems coherent. That's the way you setup the editor so why not so the same with arguments
+. So maybe system property
+.. `java -Dname=value`
+.. `jshell -R-Dfoo=bar` - pass the flag to remote runtime system
+.. Look it up by `System.getProperty("foo")`

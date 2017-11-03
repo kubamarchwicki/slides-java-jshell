@@ -28,14 +28,18 @@ class Todo{
 
 public class JavaApp {
 
-  public static void main(String... args) {
+  public Queue<Todo> storage = new ConcurrentLinkedQueue<>();
 
+  public static void main(String... args) {
+    new JavaApp().run();
+  }
+
+  public void run() {
       Service http = Service.ignite();
       http.port(8888);
       http.staticFiles.externalLocation("/home/kubam/workspaces/slides/java9-jshell/ui");
       http.init();
 
-      Queue<Todo> storage = new ConcurrentLinkedQueue<>();
       Gson gson = new Gson();
 
       http.get("/api/todos", (req, resp) -> new ArrayList<>(storage), gson::toJson);
