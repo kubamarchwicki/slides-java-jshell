@@ -320,6 +320,40 @@ public class Wrapper {
 .. `ctx.getBean(Foo.class)`
 .. `ctx.getBean(Wrapper.class)`
 
+== Spring 5 Web
+
+. Maven Spring5 Web
+.. `JAVA_HOME=/home/kubam/.jenv/versions/9 mvn jshell:compile -f maven/spring5-web`
+. Show imports `/list`
+. Initializa application
+.. Data generator +
++
+[source]
+----
+Flux<String> colors =
+    Flux.just("blue", "green", "orange").delayElements(Duration.ofSeconds(1))
+----
+.. Data generator +
++
+[source]
+----
+HandlerFunction<ServerResponse> helloColors =
+    request -> ServerResponse.ok()
+		.contentType(MediaType.TEXT_EVENT_STREAM)
+		.body(colors, String.class)
+----
+.. Add route `RouterFunction<?> route = route(path("/colors"), helloColors)`
+.. Chain routes +
++
+[source]
+----
+RouterFunction<?> route =
+	route(path("/colors"), helloColors)
+	.and(route(path("/the-answer"),
+            request -> ServerResponse.ok().body(Mono.just("42"), String.class)))
+----
+.. Start server `startServer(route)`
+
 == Bonus - attributes
 
 . You would normally run `java foo.Bar some arguments`

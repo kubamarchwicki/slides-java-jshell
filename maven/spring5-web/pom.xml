@@ -41,6 +41,11 @@
                 <groupId>net.java.openjdk.shinyafox</groupId>
                 <artifactId>jshell-maven-plugin</artifactId>
                 <version>1.0-SNAPSHOT</version>
+                <configuration>
+                    <jshellArgs>
+                        <arg>${basedir}/src/test/script/init.jsh</arg>
+                    </jshellArgs>
+                </configuration>
             </plugin>
         </plugins>
     </build>
