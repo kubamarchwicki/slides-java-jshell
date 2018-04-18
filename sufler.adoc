@@ -12,7 +12,7 @@ start with: tmux attach || tmux new
 
 == Environment and jshell
 
-. jenv: `jenv shell 9-ea`
+. jenv: `jenv shell 10`
 .. jenv not to mess with JDK version between different environments
 .. like rvm but for Java
 .. recently JDK is also featured package for sdkman.io
@@ -57,6 +57,8 @@ jshell> String convertToString(Integer i) {
 .. `import java.time.&#42;`
 .. `LocalDate.now().plusDays(44)`
 
+. We can also easily embrace completely new syntax, like `var` (local variable type inference)
+
 == Java 9
 
 === Factory methods
@@ -76,19 +78,21 @@ jshell> interface Application {
 
 === Streams Enhancements
 
-. `List<Integer> list = Arrays.asList(1, 2, 3, 4, null)`
+. Let's define a printer
+.. `Consumer<Object> print = o -> System.out.println(o)`
+. `var list = Arrays.asList(1, 2, 3, 4, null)`
 . Map +
 +
 [source]
 ----
-$1.stream()
+list.stream()
 	.map(Optional::ofNullable)
 ----
 . No flatMap of Optional +
 +
 [source]
 ----
-$1.stream()
+list.stream()
   .map(Optional::ofNullable)
   .flatMap(o -> o.map(Stream::of).orElse(Stream.empty()))
   .forEach(System.out::println)
@@ -97,7 +101,7 @@ $1.stream()
 +
 [source]
 ----
-$1.stream()
+list.stream()
 	.map(Optional::ofNullable)
 	.flatMap(Optional::stream)
 	.forEach(System.out::println)
@@ -106,7 +110,7 @@ $1.stream()
 +
 [source]
 ----
-$8.stream()
+list.stream()
 	.takeWhile(Objects::nonNull)
 	.forEach(System.out::println)
 ----
@@ -130,9 +134,9 @@ IntStream
 === Http Client - prequel
 
 . There will be a JDK HttpClient, but before we get there - how can we get data from URL
-.. `InputStream is = new URL("http://ip.jsontest.com/").openStream()`
+.. `var is = new URL("http://ip.jsontest.com/").openStream()`
 .. `InputStream.transferTo()`
-... `ByteArrayOutputStream baos = new ByteArrayOutputStream()`
+... `var baos = new ByteArrayOutputStream()`
 ... `is.transferTo(baos)`
 
 === Http Client
@@ -147,12 +151,12 @@ IntStream
 .. Maybe JDK10 (I mean Java 18.3)
 . Parse JSON from external URI (`http://ip.jsontest.com`)
 .. Show it in console, curl
-. URI uri = URI.create("http://ip.jsontest.com/");
+. var uri = URI.create("http://ip.jsontest.com/");
 . `HttpRequest.Builder` +
 +
 [source]
 ----
-HttpRequest req = HttpRequest
+var req = HttpRequest
 	.newBuilder(uri)
 	.GET()
 	.build()
@@ -170,7 +174,7 @@ HttpClient
 +
 [source]
 ----
-HttpRequest req = HttpRequest
+var req = HttpRequest
 	.newBuilder(uri)
 	.header("Accept", "application/json")
 	.GET()
@@ -191,7 +195,7 @@ HttpRequest req = HttpRequest
 
 . Initialize (`snippers/1_ignite.jsh`)
 .. `import spark.&#42;`
-.. `Service http = Service.ignite()`
+.. `var http = Service.ignite()`
 .. `http.port(8888)`
 .. `http.init()`
 
@@ -211,7 +215,7 @@ Route r = (req, resp) -> {
 == GSON
 
 .. `import com.google.gson.&#42;`
-.. `Gson gson = new Gson()`
+.. `var gson = new Gson()`
 .. `http.get("/json", r, gson::toJson)`
 .. show in the browser `http://localhost:8888/json`
 .. `/save /tmp/json.jsh`
@@ -235,6 +239,7 @@ Route r = (req, resp) -> {
 .. run it with `jshell --class-path $CP app.jsh`
 .. backup: `/open snippets/2_application.jsh`
 . show in browser
+.. `curl -v -XPOST --data @todo.json http://localhost:8888/api/todos`
 . add a simple Todo
 . show in jshell
 . `storage.clear()`
@@ -244,7 +249,7 @@ Route r = (req, resp) -> {
 
 . Run from bash `jshell snippets/2_application.jsh`
 . Copy `snippets/2_application.jsh` to `bash_app.jsh`
-. Add `hash bang /opt/java/jdk-9/bin/jshell`
+. Add `hash bang /opt/java/jdk-10/bin/jshell`
 . `chmod a+x bash_app.jsh`
 . Run it as a bash
 
@@ -252,7 +257,7 @@ Route r = (req, resp) -> {
 
 . Maven
 .. from jshell `jshell -c target/classes/:$CP`
-.. with Maven `JAVA_HOME=/home/kubam/.jenv/versions/9-ea mvn jshell:compile -f maven/spark`
+.. with Maven `JAVA_HOME=/home/kubam/.jenv/versions/10 mvn jshell:compile -f maven/spark`
 .. Other tooling support
 ... Netbeans
 ... IntelliJ
@@ -271,8 +276,8 @@ App app = App.build().withPort(4567).withStorage(new InMemoryStorage(store)).bui
 .. `store.add(Todo.create(2, "Another todo", 2,true))`
 .. Show in the web
 .. add new on the web
-.. `Todo.create(1, "Sample todo", 0, false)`
-.. `store.add($6)`
+.. `var todo = Todo.create(1, "Sample todo", 0, false)`
+.. `store.add(todo)`
 .. show `store`
 
 . Live reload
@@ -289,8 +294,8 @@ App app = App.build().withPort(4567).withStorage(new InMemoryStorage(store)).bui
 == Spring 5 example
 
 . Maven Spring5 example
-.. `JAVA_HOME=/home/kubam/.jenv/versions/9 mvn jshell:compile -f maven/spring5`
-... To avoid too much typing run with a script `JAVA_HOME=/home/kubam/.jenv/versions/9 mvn package jshell:compile -PwithArgs -DjshellArgs=src/test/scripts/init.jsh`
+.. `JAVA_HOME=/home/kubam/.jenv/versions/10 mvn jshell:compile -f maven/spring5`
+... To avoid too much typing run with a script `JAVA_HOME=/home/kubam/.jenv/versions/10 mvn package jshell:compile -PwithArgs -DjshellArgs=src/test/scripts/init.jsh`
 ... Show what's already there with `/list` command
 .. Basic classes +
 +
@@ -313,7 +318,7 @@ public class Wrapper {
 
 .. `import org.springframework.context.support.&#42;`
 .. `import org.springframework.context.annotation.&#42;`
-.. `GenericApplicationContext ctx = new AnnotationConfigApplicationContext()`
+.. `var ctx = new AnnotationConfigApplicationContext()`
 .. `ctx.registerBean(Foo.class, () -> new Foo("bar"))`
 .. `ctx.registerBean(Wrapper.class, bd -> bd.setScope("prototype"))` (a bean descriptor)
 .. `ctx.refresh()`
@@ -323,7 +328,7 @@ public class Wrapper {
 == Spring 5 Web
 
 . Maven Spring5 Web
-.. `JAVA_HOME=/home/kubam/.jenv/versions/9 mvn jshell:compile -f maven/spring5-web`
+.. `JAVA_HOME=/home/kubam/.jenv/versions/10 mvn jshell:compile -f maven/spring5-web`
 . Show imports `/list`
 . Initializa application
 .. Data generator +
@@ -367,3 +372,4 @@ RouterFunction<?> route =
 .. `java -Dname=value`
 .. `jshell -R-Dfoo=bar` - pass the flag to remote runtime system
 .. Look it up by `System.getProperty("foo")`
+.. `jshell -R-DPORT=8080 --class-path $CP snippets/JavaApp.java`

@@ -1,4 +1,4 @@
-= Java9 and REPL. Forget debugging, welcome joy and productivity
+= Java and REPL. Forget debugging, welcome joy and productivity
 
 == Abstract
 
@@ -6,7 +6,7 @@ Oh Java, my old, lousy and boilerpalted friend. For ages, trying anything new (w
 
 Thankfully, things have changed. With the Java9 a REPL has been introduced, everybody can just run an up-to-date Java shell and try out new sytaxt, new APIs, new libraries. Now we can feel like Scala, CLojure, Ruby, JavaScript, PHP, call whatever language developers - finally there.
 
-In this talk I'll walk through essential REPL examples, see how we can use JShell to try out new language features (like Java9 Streams enhancements), but foremost, we will use it to build a real-life web application. Expect meat-only talk without theory, diagrams, useless "javax.swing.*" application examples.
+In this talk I'll walk through essential REPL examples, see how we can use JShell to try out new language features (like Java 10 `var` syntax, Java 9 Streams enhancements), but foremost, we will use it to build a real-life web application. Expect meat-only talk without theory, diagrams, useless "javax.swing.*" application examples.
 
 == Content
 
