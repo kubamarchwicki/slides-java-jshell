@@ -1,9 +1,6 @@
-= Java9 and REPL
+= Java and REPL
 Forget debugging, welcome joy and productivity
 :idprefix: slide_
-:title-slide-background-image: title_bg_barcelona.jpg
-// Background: https://pbs.twimg.com/media/C_XlJzFXkAAwh5V.jpg
-:title-slide-background-size: cover
 :icons: font
 :imagesdir: images
 :figure-caption!:
@@ -36,7 +33,6 @@ Integration::
 
 == Why JShell? Why REPL?
 
-[%step]
 * Learning Java
 * Experimenting with new libraries
 * Rapid prototyping
@@ -70,7 +66,7 @@ image::showtime.gif[background]
 
 == Questions? Links? And other goodies
 
-https://github.com/kubamarchwicki/slides-java9-jshell
+https://github.com/kubamarchwicki/slides-java-jshell
 
 @kubem . kuba.marchwicki@gmail.com +
 http://jakub.marchwicki.pl/
