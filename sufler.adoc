@@ -59,6 +59,30 @@ jshell> String convertToString(Integer i) {
 
 . We can also easily embrace completely new syntax, like `var` (local variable type inference)
 
+== A better example - a random ID string
+
+
+
+.UUID
+`UUID.randomUUID()`
+
+.Random (non numeric)
+[source]
+----
+byte[] array = new byte[7];
+new Random().nextBytes(array);
+String generatedString = new String(array, Charset.forName("UTF-8"));
+----
+
+.Fixed length
+----
+Random r = new Random();
+StringBuilder b = new StringBuilder();
+IntStream.range(0, 10).
+  map(i -> 97 + (int) (random.nextFloat() * (122 - 97 + 1))).
+  forEach(i -> b.append((char)i))
+----
+
 == Java 9
 
 === Factory methods
@@ -249,7 +273,7 @@ Route r = (req, resp) -> {
 
 . Run from bash `jshell snippets/2_application.jsh`
 . Copy `snippets/2_application.jsh` to `bash_app.jsh`
-. Add `hash bang /opt/java/jdk-10/bin/jshell`
+. Add `//usr/bin/env jshell`
 . `chmod a+x bash_app.jsh`
 . Run it as a bash
 
@@ -257,7 +281,7 @@ Route r = (req, resp) -> {
 
 . Maven
 .. from jshell `jshell -c target/classes/:$CP`
-.. with Maven `JAVA_HOME=/home/kubam/.jenv/versions/10 mvn jshell:compile -f maven/spark`
+.. with Maven `mvn jshell:compile -f maven/spark`
 .. Other tooling support
 ... Netbeans
 ... IntelliJ
@@ -294,8 +318,8 @@ App app = App.build().withPort(4567).withStorage(new InMemoryStorage(store)).bui
 == Spring 5 example
 
 . Maven Spring5 example
-.. `JAVA_HOME=/home/kubam/.jenv/versions/10 mvn jshell:compile -f maven/spring5`
-... To avoid too much typing run with a script `JAVA_HOME=/home/kubam/.jenv/versions/10 mvn package jshell:compile -PwithArgs -DjshellArgs=src/test/scripts/init.jsh`
+.. `mvn jshell:compile -f maven/spring5`
+... To avoid too much typing run with a script `mvn package jshell:compile -PwithArgs -DjshellArgs=src/test/scripts/init.jsh`
 ... Show what's already there with `/list` command
 .. Basic classes +
 +
@@ -328,7 +352,7 @@ public class Wrapper {
 == Spring 5 Web
 
 . Maven Spring5 Web
-.. `JAVA_HOME=/home/kubam/.jenv/versions/10 mvn jshell:compile -f maven/spring5-web`
+.. `mvn jshell:compile -f maven/spring5-web`
 . Show imports `/list`
 . Initializa application
 .. Data generator +

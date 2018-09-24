@@ -1,4 +1,4 @@
-#!/opt/java/jdk-9/bin/jshell
+//usr/bin/env jshell 
 
 /set editor vim
 /env --class-path /home/kubam/.m2/repository/com/sparkjava/spark-core/2.5/spark-core-2.5.jar:/home/kubam/.m2/repository/org/slf4j/slf4j-api/1.7.24/slf4j-api-1.7.24.jar:/home/kubam/.m2/repository/org/slf4j/slf4j-simple/1.7.24/slf4j-simple-1.7.24.jar:/home/kubam/.m2/repository/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar:/home/kubam/.m2/repository/org/eclipse/jetty/aggregate/jetty-all/9.3.6.v20151106/jetty-all-9.3.6.v20151106-uber.jar:/home/kubam/.m2/repository/com/google/code/gson/gson/2.8.0/gson-2.8.0.jar
